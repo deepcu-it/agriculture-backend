@@ -21,7 +21,6 @@ router.get("/get-weather-data", getWeatherData);
 router.get("/weather/past", getPastWeatherData);
 router.get("/weather/forecast", getFutureWeatherData);
 
-router
 
 
 export default router;
