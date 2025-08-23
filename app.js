@@ -23,6 +23,8 @@ import userRoutes from './routes/userRoutes.js';
 app.use("/user", userRoutes);
 import geminiRoutes from './routes/geminiRoutes.js';
 app.use("/gemini", geminiRoutes);
+import agriRoutes from './routes/agriRoutes.js';
+app.use("/agri", agriRoutes);
 
 
 app.listen(process.env.PORT, () => {
