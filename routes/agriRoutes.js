@@ -4,7 +4,8 @@ import {
   agriVision,
   cropGPT,
   ecoAI,
-  agriChat
+  agriChat,
+  getWeatherData
 } from "../controllers/agriController.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.post("/vision", agriVision);        // yield predictor & storytelling
 router.post("/crop-gpt", cropGPT);         // price & profitability insights
 router.post("/eco-ai", ecoAI);             // climate impact analyzer
 router.post("/chat", agriChat);            // brainstorming
+router.get("/get-weather-data", getWeatherData);
 
 export default router;

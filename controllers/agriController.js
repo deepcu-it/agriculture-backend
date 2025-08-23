@@ -1,5 +1,6 @@
 import { callGemini } from "../utils/callGemini.js";
 import { saveChatHistory } from "../utils/saveChatHistory.js";
+import axios from "axios";
 
 // 1. AgriCopilot - Multilingual Farming Assistant
 export const agriCopilot = async (req, res) => {
@@ -466,3 +467,22 @@ Instructions:
     });
   }
 };
+
+export const getWeatherData = async (req, res) => {
+    try {
+      // do by region
+      const { region } = req.query;
+      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${region}&appid=${process.env.OPEN_WEATHER_API_KEY}`);
+      res.status(200).json({
+        success: true,
+        message: response.data
+      });
+    }catch(error){
+      console.error("getWeatherData Error:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Internal server error" 
+      });
+    }
+
+}
