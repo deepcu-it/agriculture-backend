@@ -86,9 +86,9 @@ Instructions:
 
   } catch (error) {
     console.error("AgriCopilot Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error"
     });
   }
 };
@@ -179,9 +179,9 @@ Instructions:
 
   } catch (error) {
     console.error("AgriVision Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error"
     });
   }
 };
@@ -273,9 +273,9 @@ Instructions:
 
   } catch (error) {
     console.error("CropGPT Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error"
     });
   }
 };
@@ -367,9 +367,9 @@ Instructions:
 
   } catch (error) {
     console.error("Eco-AI Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error"
     });
   }
 };
@@ -461,28 +461,141 @@ Instructions:
 
   } catch (error) {
     console.error("AgriChat Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error"
     });
   }
 };
 
 export const getWeatherData = async (req, res) => {
-    try {
-      // do by region
-      const { region } = req.query;
-      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${region}&appid=${process.env.OPEN_WEATHER_API_KEY}`);
-      res.status(200).json({
-        success: true,
-        message: response.data
-      });
-    }catch(error){
-      console.error("getWeatherData Error:", error);
-      res.status(500).json({ 
+  try {
+    // do by region
+    const { region } = req.query;
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${region}&appid=${process.env.OPEN_WEATHER_API_KEY}`);
+    res.status(200).json({
+      success: true,
+      message: response.data
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+
+}
+
+export const getPastWeatherData = async (req, res) => {
+  try {
+    const { region, duration } = req.query; // duration in days (max 30)
+
+    if (!region || !duration) {
+      return res.status(400).json({
         success: false,
-        message: "Internal server error" 
+        message: "Region and duration are required"
       });
     }
 
-}
+    const currentTimestamp = Math.floor(Date.now() / 1000); // now
+    const days = Math.min(Number(duration), 30); // cap at 30 days
+
+    let pastData = [];
+
+    // OpenWeatherMap "timemachine" API (One Call)
+    for (let i = 1; i <= days; i++) {
+      const pastTimestamp = currentTimestamp - i * 24 * 60 * 60;
+
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${region}&dt=${pastTimestamp}&appid=${process.env.OPEN_WEATHER_API_KEY}&units=metric`
+      );
+
+      pastData.push({
+        date: new Date(pastTimestamp * 1000).toISOString().split("T")[0],
+        temperature: response.data.main.temp,
+        humidity: response.data.main.humidity,
+        wind_speed: response.data.wind.speed,
+        condition: response.data.weather[0].description
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      region,
+      duration: days,
+      data: pastData.reverse() // oldest to latest
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+
+// Get future forecast
+export const getFutureWeatherData = async (req, res) => {
+  try {
+    const { region, duration } = req.query; // duration in days (max 7 for free plan)
+
+    if (!region || !duration) {
+      return res.status(400).json({
+        success: false,
+        message: "Region and duration are required"
+      });
+    }
+
+    const days = Math.min(Number(duration), 7); // cap at 7 (free tier)
+
+    // First get lat/lon of region
+    const geoResponse = await axios.get(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${region}&limit=1&appid=${process.env.OPEN_WEATHER_API_KEY}`
+    );
+
+    if (!geoResponse.data.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Region not found"
+      });
+    }
+
+    const { lat, lon } = geoResponse.data[0];
+
+    // Fetch forecast
+    const forecastResponse = await axios.get(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${region}&appid=${process.env.OPEN_WEATHER_API_KEY}`
+    );
+
+
+    const forecastData = forecastResponse.data.list
+      .filter(item => {
+        const forecastDate = new Date(item.dt * 1000);
+        const today = new Date();
+        const diffTime = forecastDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays > 0 && diffDays <= days;
+      })
+      .map(item => ({
+        date: new Date(item.dt * 1000).toISOString().split("T")[0],
+        temperature: item.main.temp,
+        humidity: item.main.humidity,
+        wind_speed: item.wind.speed,
+        condition: item.weather[0].description
+      }));
+    res.status(200).json({
+      success: true,
+      region,
+      duration: days,
+      data: forecastData
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};

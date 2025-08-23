@@ -90,7 +90,7 @@ const ChatHistorySchema = new mongoose.Schema({
     season: {
         type: String,
         required: true,
-        enum: ['kharif', 'rabi', 'zaid', 'spring', 'summer', 'winter', 'monsoon']
+        enum: ['kharif', 'rabi', 'zaid', 'spring', 'autumn', 'winter', 'monsoon', 'whole year']
     },
     created_at: {
         type: Date,
