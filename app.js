@@ -26,6 +26,11 @@ app.use("/gemini", geminiRoutes);
 import agriRoutes from './routes/agriRoutes.js';
 app.use("/agri", agriRoutes);
 
+// if no route is matched
+app.use((req, res) => { 
+    res.status(404).json({ message: "Route not found" });
+});
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
