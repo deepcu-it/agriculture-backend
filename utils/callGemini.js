@@ -5,7 +5,7 @@ if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export const callGemini = async (prompt, modelName = "gemini-1.5-flash") => {
+export const callGemini = async (prompt, modelName = "gemini-2.0-flash") => {
   try {
     const model = genAI.getGenerativeModel({ model: modelName });
     const result = await model.generateContent([prompt]);
