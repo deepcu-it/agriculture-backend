@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import RawChatHistory from "../models/RawChatHistory";
+import RawChatHistory from "../models/RawChatHistory.js";
 
 
 const apiKey = process.env.GEMINI_API_KEY || "AIzaSyBPFw540bTS24RnD9lBMd_7HPmO-uh8v2Y";
