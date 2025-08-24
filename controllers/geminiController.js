@@ -11,6 +11,9 @@ export const geminiCall = async (req, res) => {
     const history = await RawChatHistory.find({});
     const prompt = `You are an AI assistant that provides information about Indian agriculture. Answer the following question: ${user_message}
     considering the previous chat history: ${history.map(h => h.chathistory).join("\n")}
+    if there is no chat history, answer based on your knowledge only. 
+    if user say hi, hello, hey, then greet them back in a friendly manner. no need to say anything provided chat history.
+    if you don't know the answer, just say "I don't know"
     `;
 
     // Get Gemini response
