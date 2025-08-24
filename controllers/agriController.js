@@ -17,7 +17,7 @@ export const agriCopilot = async (req, res) => {
       temperature,
       ndvi,
       yield: yieldData,
-      season,
+      season,language
     } = req.body;
 
     // Validate required fields
@@ -54,7 +54,9 @@ Instructions:
 3. Provide practical farming advice based on the context
 4. Keep response around 150 words
 5. Be encouraging and supportive
-6. Include specific recommendations for their situation`;
+6. Include specific recommendations for their situation
+7. You need to provide the response in ${language || 'English'}.`;
+
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -92,7 +94,6 @@ Instructions:
     });
   }
 };
-
 // 2. AgriVision - Smart Yield Predictor & Storytelling
 export const agriVision = async (req, res) => {
   try {
@@ -108,7 +109,7 @@ export const agriVision = async (req, res) => {
       temperature,
       ndvi,
       yield: yieldData,
-      season,
+      season,language
     } = req.body;
 
     // Validate required fields
@@ -147,7 +148,8 @@ Instructions:
 5. Example: Instead of "rainfall is 1200mm", say "This year, your rice crop looks strong because rainfall is above average, but monitor pest attacks"
 6. Keep response around 150 words
 7. Be optimistic but realistic
-8. Include specific actionable insights`;
+9. You need to provide the response in ${language || 'English'}.`;
+
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -201,7 +203,7 @@ export const cropGPT = async (req, res) => {
       temperature,
       ndvi,
       yield: yieldData,
-      season,
+      season,language
     } = req.body;
 
     // Validate required fields
@@ -241,7 +243,8 @@ Instructions:
 6. Stay aligned with local soil and climate conditions
 7. Include specific crop recommendations with reasoning
 8. Keep response around 150 words
-9. Be practical and actionable`;
+9. You need to provide the response in ${language || 'English'}.`;
+
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -295,7 +298,7 @@ export const ecoAI = async (req, res) => {
       temperature,
       ndvi,
       yield: yieldData,
-      season,
+      season,language
     } = req.body;
 
     // Validate required fields
@@ -335,7 +338,8 @@ Instructions:
 6. Consider resource efficiency and climate impact
 7. Provide actionable recommendations for sustainable farming
 8. Keep response around 150 words
-9. Focus on practical sustainability solutions`;
+9. You need to provide the response in ${language || 'English'}.`;
+
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -390,6 +394,7 @@ export const agriChat = async (req, res) => {
       ndvi,
       yield: yieldData,
       season,
+      language
     } = req.body;
 
     // Validate required fields
@@ -429,7 +434,7 @@ Instructions:
 6. Provide practical guidance for trying new approaches
 7. Consider intercropping techniques, irrigation methods, and sustainable practices
 8. Keep response around 150 words
-9. Focus on sparking creativity and encouraging experimentation`;
+9. You need to provide the response in ${language || 'English'}.`;
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -448,7 +453,7 @@ Instructions:
       temperature,
       ndvi,
       yieldData,
-      season,
+      season
     });
 
     res.status(200).json({
