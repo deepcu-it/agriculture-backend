@@ -1,13 +1,17 @@
 import { callGemini } from "../utils/callGemini.js";
 import { saveChatHistory } from "../utils/saveChatHistory.js";
+import RawChatHistory from "../models/RawChatHistory.js";
+
 
 export const geminiCall = async (req, res) => {
   try {
     const {
       user_message
     } = req.body;
-
-    const prompt = `You are an AI assistant that provides information about Indian agriculture. Answer the following question: ${user_message}`;
+    const history = await RawChatHistory.find({});
+    const prompt = `You are an AI assistant that provides information about Indian agriculture. Answer the following question: ${user_message}
+    considering the previous chat history: ${history.map(h => h.chathistory).join("\n")}
+    `;
 
     // Get Gemini response
     const assistantResponse = await callGemini(prompt);
@@ -84,3 +88,4 @@ Constraints:
     });
   }
 };
+

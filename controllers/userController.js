@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
     } catch (e) {
         res.status(400).json({
             success: false,
-            message: e.message,
+            error: e.message,
         });
     }
 };
@@ -44,7 +44,7 @@ const loginUser = async (req, res) => {
     } catch (e) {
         res.status(400).json({
             success: false,
-            message: e.message,
+            error: e.message,
         });
     }
 };
