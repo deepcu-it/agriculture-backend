@@ -2,7 +2,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import RawChatHistory from "../models/RawChatHistory.js";
 
 
-const apiKey = process.env.GEMINI_API_KEY || "AIzaSyBPFw540bTS24RnD9lBMd_7HPmO-uh8v2Y";
+const apiKey = process.env.GEMINI_API_KEY;
+
 if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
 
 const genAI = new GoogleGenerativeAI(apiKey);
